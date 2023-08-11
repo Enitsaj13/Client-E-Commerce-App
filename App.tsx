@@ -1,22 +1,33 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { NavigationContainer } from '@react-navigation/native'
+import FocusedStatusBar from '@src/components/FocusedStatusBar'
+import Toast from 'react-native-toast-message'
 
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
+/* --- main navigator --- */
+import RootNavigator from '@src/navigations/RootNavigator'
 
-export default function App() {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+/* --- redux --- */
+import { Provider } from 'react-redux'
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <SafeAreaProvider>
-        <Navigation colorScheme={colorScheme} />
-        <StatusBar />
-      </SafeAreaProvider>
-    );
-  }
+import { PersistGate } from 'redux-persist/integration/react'
+
+import { persistor, store } from '@src/rtk/store'
+
+
+const App = () => {
+
+  return (
+    <Provider store={store}>
+      <PersistGate persistor={persistor}>
+        <NavigationContainer>
+          <FocusedStatusBar barStyle="light-content" />
+          <RootNavigator />
+          <Toast />
+        </NavigationContainer>
+      </PersistGate>
+    </Provider>
+  )
 }
+
+export default App
+
+
